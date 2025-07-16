@@ -1,8 +1,6 @@
 name: Build, Test, and Enforce Coverage
 
-on:
-  push:
-    branches: [ "**" ]
+on:  
   pull_request:
     branches: [ "**" ]
 
