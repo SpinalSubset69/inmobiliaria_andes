@@ -20,10 +20,8 @@ namespace InmobiliariaAndes.API.Controllers
 
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
-        {
-            var newTEst = 100;
-
-            return Enumerable.Range(1, newTEst).Select(index => new WeatherForecast
+        {            
+            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                 TemperatureC = Random.Shared.Next(-20, 55),
