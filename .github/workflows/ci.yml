@@ -1,0 +1,58 @@
+name: Build, Test, and Enforce Coverage
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+
+jobs:
+  build-test-coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET 8
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore --configuration Release
+
+    - name: Test with coverage
+      run: |
+        dotnet test --no-build --configuration Release \
+          --collect:"XPlat Code Coverage" \
+          --results-directory ./TestResults
+
+    - name: Verify code coverage >= 60%
+      run: |
+        report=$(find ./TestResults -name 'coverage.cobertura.xml' | head -n 1)
+        if [ -z "$report" ]; then
+          echo "Coverage report not found!"
+          exit 1
+        fi
+        coverage=$(xmllint --xpath "string(//coverage/@line-rate)" "$report")
+        percent=$(echo "$coverage * 100" | bc)
+        echo "Line coverage: $percent%"
+        min=60
+        result=$(echo "$percent >= $min" | bc)
+        if [ "$result" -ne 1 ]; then
+          echo "Code coverage $percent% is below the minimum threshold of $min%"
+          exit 1
+        fi
+      shell: bash
+      env:
+        DOTNET_CLI_HOME: /tmp
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: ./TestResults

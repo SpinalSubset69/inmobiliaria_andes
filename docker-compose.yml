@@ -1,0 +1,17 @@
+name: inmobiliaria-andes
+
+services:
+  inmobiliaria-api:
+    restart: always
+    build:
+      context: .
+      dockerfile: DockerFile    
+    env_file:
+      - path: .env
+        required: true
+    environment:
+      - ConnectionStrings__DbConnectionString=${DB_CONNECTION_STRING}
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
+    ports:
+      - 3000:8080
+

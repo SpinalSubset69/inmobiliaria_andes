@@ -1,0 +1,29 @@
+# Use the official .NET 8 SDK image to build the app
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copy csproj and restore as distinct layers
+COPY ["src/InmobiliariaAndes.API/InmobiliariaAndes.API.csproj", "src/InmobiliariaAndes.API/"]
+COPY ["src/InmobiliariaAndes.Application/InmobiliariaAndes.Application.csproj", "src/InmobiliariaAndes.Application/"]
+COPY ["src/InmobiliariaAndes.Infrastructure/InmobiliariaAndes.Infrastructure.csproj", "src/InmobiliariaAndes.Infrastructure/"]
+RUN dotnet restore "src/InmobiliariaAndes.API/InmobiliariaAndes.API.csproj"
+
+# Copy the rest of the source code
+COPY . .
+
+# Build the app
+WORKDIR "/src/src/InmobiliariaAndes.API"
+RUN dotnet publish -c Release -o /app/publish
+
+# Use the official ASP.NET Core runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+
+# Expose port 80
+EXPOSE 8080
+
+# Set environment variables if needed
+# ENV ASPNETCORE_ENVIRONMENT=Development
+
+ENTRYPOINT ["dotnet", "InmobiliariaAndes.API.dll"]
