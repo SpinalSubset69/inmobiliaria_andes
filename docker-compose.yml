@@ -10,7 +10,7 @@ services:
       - path: .env
         required: true
     environment:
-      - ConnectionStrings__DbConnectionString=${DB_CONNECTION_STRING}
+      - ConnectionStrings__DbConnectionString=${ConnectionStrings__DbConnectionString}
       - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
     ports:
       - 3000:8080

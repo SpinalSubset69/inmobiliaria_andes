@@ -1,19 +1,24 @@
 using InmobiliariaAndes.Application.Contracts;
 using InmobiliariaAndes.Application.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace InmobiliariaAndes.Application.Services.HostedServices;
 
 public class AppQuartzHostedService(
-    IAppUnitOfWork appUnitOfWork,
     ILogger<AppQuartzHostedService> logger,
-    IQuartzService quartzService
+     IServiceScopeFactory serviceScopeFactory
     ) : IHostedService, IDisposable
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation($"Going to schedule Quartz jobs at {DateTime.Now}.");
+
+        using IServiceScope scope = serviceScopeFactory.CreateScope();
+
+        var appUnitOfWork = scope.ServiceProvider.GetRequiredService<IAppUnitOfWork>();
+        var quartzService = scope.ServiceProvider.GetRequiredService<IQuartzService>();
 
         try
         {
@@ -50,6 +55,7 @@ public class AppQuartzHostedService(
         }
         finally
         {
+            appUnitOfWork.Dispose();
             Dispose();
         }
 
@@ -68,8 +74,7 @@ public class AppQuartzHostedService(
     {
         if (!disposing) return;
 
-        // Logic to dispose of resources if necessary
-        appUnitOfWork.Dispose();
+        // Logic to dispose of resources if necessary        
         logger.LogInformation("Quartz Hosted Service disposed.");
     }
 
