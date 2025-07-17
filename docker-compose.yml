@@ -10,8 +10,11 @@ services:
       - path: .env
         required: true
     environment:
-      - ConnectionStrings__DbConnectionString=${ConnectionStrings__DbConnectionString}
-      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
+      - DataBase__DataSource=${DATASOURCE}
+      - DataBase__UserId=${USERID}
+      - DataBase__Password=${PASSWORD}
+      - DataBase__InitialCatalog=${INITIALCATALOG}
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
     ports:
       - 3000:5000
 
