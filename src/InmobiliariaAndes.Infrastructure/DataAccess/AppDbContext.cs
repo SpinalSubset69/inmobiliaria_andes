@@ -6,12 +6,13 @@ using Microsoft.EntityFrameworkCore;
 namespace InmobiliariaAndes.Infrastructure.DataAccess;
 
 [ExcludeFromCodeCoverage]
-internal class AppDbContext : DbContext
+public class AppDbContext : DbContext
 {
 
     public DbSet<Member> Members { get; set; }
     public DbSet<BalanceMovement> BalanceMovements { get; set; }
     public DbSet<Concept> Concepts { get; set; }
+    public DbSet<QuartzConfiguration> QuartzConfigurations { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
@@ -26,5 +27,6 @@ internal class AppDbContext : DbContext
         ConceptDbMapping.Map(modelBuilder);
         BalanceMovementDbMapping.Map(modelBuilder);
         MemberDbMapping.Map(modelBuilder);
+        QuartzConfigurationDbMapping.Map(modelBuilder);
     }
 }

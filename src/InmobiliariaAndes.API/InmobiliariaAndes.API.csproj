@@ -15,4 +15,8 @@
     <ProjectReference Include="..\InmobiliariaAndes.Domain\InmobiliariaAndes.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>

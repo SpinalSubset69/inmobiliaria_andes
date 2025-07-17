@@ -1,16 +1,17 @@
+using InmobiliariaAndes.API.Configurations.ServiceCollectionExtensions;
 using InmobiliariaAndes.API.Utils;
 using InmobiliariaAndes.Application.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Load environment variables from .env file
-var environment  = builder.Environment.EnvironmentName; 
+var environment = builder.Environment.EnvironmentName;
 
-if(environment == "Local")
+if (environment == "Local")
 {
     var contentRootPath = builder.Environment.ContentRootPath;
     var srcPath = Path.Combine(contentRootPath, "..\\..\\");
-    var envPath = Path.Combine(srcPath, "local.env");    
+    var envPath = Path.Combine(srcPath, "local.env");
     DotEnv.Load(envPath);
 }
 
@@ -19,8 +20,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Add Quartz service configuration
+builder.Services.AddQuartzService();
+
 // Add Application Services
-builder.Services.AddApplicationServices(builder.Configuration); 
+builder.Services.AddApplicationServices(builder.Configuration);
+
+// Add application hosted services
+builder.Services.AddApplicationHostedServices();
 
 var app = builder.Build();
 
